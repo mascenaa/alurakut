@@ -4,6 +4,7 @@ import Box from '../src/components/Box/index'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet, AlurakutLoginScreen } from '../src/lib/AlurakutCommuns'
 import { ProfileRelationsBoxWrapper } from '../src/components/profileRelations/index'
 
+
 //const comunidades = comunidades[0];
 //const alterador = comunidades[1];
 //const comunidades = ['Alurakut Devs',]
@@ -80,8 +81,7 @@ export default function Home() {
   // UserDefault
   const githubUser = 'patrooooo'
   // SettingC
-  const [comunidades, setComunidades] = React.useState([{
-  }]);
+  const [comunidades, setComunidades] = React.useState([]);
   // FavPersons ;)
   const pessoasFav = [
     'juunegreiros',
@@ -106,24 +106,26 @@ export default function Home() {
         setSeguidores(respostaCompleta);
       })
 
+
+
     // API post/get GraphQL
     fetch('https://graphql.datocms.com/', {
       method: 'POST',
       headers: {
-        'Authorization': '9df1ea66e9689a588ba18f1ebc4650',
+        'Authorization': 'b21c65ac78d3270c270a8205b929af',
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify({ "query": `query {
         allCommunities {
           id 
           title
           imageUrl
-          creatorSlug
+          creatorslug
         }
       }` })
     })
-    .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
+    .then((response) => response.json())
     .then((respostaCompleta) => {
       const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
       console.log(comunidadesVindasDoDato)
@@ -156,16 +158,30 @@ export default function Home() {
             <form onSubmit={
               function captureCommunity(e) {
                 e.preventDefault();
-
-                const dadosdoForm = new FormData(e.target);
+                const dadosDoForm = new FormData(e.target);
+        
 
                 const comunidade = {
-                  titulo: dadosdoForm.get('title'),
-                  image: dadosdoForm.get('image'),
+                  title: dadosDoForm.get('title'),
+                  imageUrl: dadosDoForm.get('image'),
+                  imageUrl: dadosDoForm.get('image'),
+                  creatorslug: githubUser,
                 }
-                const comunidadesAtuais = [...comunidades, comunidade];
-                setComunidades(comunidadesAtuais);
 
+                fetch('/api/comunidades', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(comunidade)
+                })
+                .then(async (response) => {
+                  const dados = await response.json();
+                  console.log(dados.registroCriado);
+                  const comunidade = dados.registroCriado;
+                  const comunidadesAtualizadas = [...comunidades, comunidade];
+                  setComunidades(comunidadesAtualizadas)
+                })
               }
             } >
               <div>
@@ -178,7 +194,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <input
+                <input className="input"
                   placeholder="Insira a URL da capa de sua comunidade"
                   name="image"
                   autocomplete="off"

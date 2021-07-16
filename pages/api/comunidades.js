@@ -1,21 +1,29 @@
 import { SiteClient } from 'datocms-client';
 
-export default async function recebedorDeRequest(request, response) {
+export default async function recebedorDeRequests(request, response) {
+    if(request.method === 'POST') {
+        const TOKEN = '04d9d268e4436422234dd82a3b7319';
+        const client = new SiteClient(TOKEN);
 
-    const Token = '04d9d268e4436422234dd82a3b7319'
-    const client = new SiteClient(Token);
+        // Validar os dados, antes de sair cadastrando
+        const registroCriado = await client.items.create({
+            itemType: "972754", // ID do Model de "Communities" criado pelo Dato
+            ...request.body,
+            // title: "Comunidade de Teste",
+            // imageUrl: "https://github.com/omariosouto.png",
+            // creatorSlug: "omariosouto"
+        })
 
-    const registroCriado = await client.items.create({
-        itemType: "972754", // CommunID
-        title: "DevInPatro",
-        imageUrl: "https://github.com/patroooo.png",
-        creatorSlug: "patrocinadorInc"
+        console.log(registroCriado);
+
+        response.json({
+            dados: 'Algum dado qualquer',
+            registroCriado: registroCriado,
+        })
+        return;
+    }
+
+    response.status(404).json({
+        message: 'Ainda não temos nada no GET, mas no POST tem!'
     })
-
-    response.json({
-
-        dados: 'apitest',
-        registroCriado: registroCriado,
-
-    })
-}
+} 
