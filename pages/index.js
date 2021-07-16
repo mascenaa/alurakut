@@ -50,7 +50,7 @@ function ProfileSidebar(props) {
 }
 // ----------------------------------------------------------
 
-// ProfileBox = ProfileRelationsBoxWrapper/2
+// ProfileBox = ProfileRelationsBoxWrapper/2 
 function ProfileRelationsBox(props2) {
   return (
     <ProfileRelationsBoxWrapper>
@@ -81,10 +81,6 @@ export default function Home() {
   const githubUser = 'patrooooo'
   // SettingC
   const [comunidades, setComunidades] = React.useState([{
-    id: numero,
-    title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
-
   }]);
   // FavPersons ;)
   const pessoasFav = [
@@ -113,6 +109,25 @@ export default function Home() {
     // API post/get GraphQL
     fetch('https://graphql.datocms.com/', {
       method: 'POST',
+      headers: {
+        'Authorization': '9df1ea66e9689a588ba18f1ebc4650',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ "query": `query {
+        allCommunities {
+          id 
+          title
+          imageUrl
+          creatorSlug
+        }
+      }` })
+    })
+    .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
+    .then((respostaCompleta) => {
+      const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+      console.log(comunidadesVindasDoDato)
+      setComunidades(comunidadesVindasDoDato)
     })
   }, [])
 
@@ -189,8 +204,8 @@ export default function Home() {
                 {comunidades.map((itemAtual) => {
                   return (
                     <li id={itemAtual.id}>
-                      <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
-                        < img src={itemAtual.image} />
+                      <a href={`/comunidades/${itemAtual.title}`} key={itemAtual.id}>
+                        < img src={itemAtual.imageUrl} />
                         <span>{itemAtual.title}</span>
                       </a>
                     </li>
