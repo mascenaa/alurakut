@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 const Box = styled.div`
-  background: #FFFFFF;
-  border-radius: 8px;
+  background: #F4F9F9;
+  border-radius: 16px;
 
   padding: 16px;
 
@@ -18,6 +18,12 @@ const Box = styled.div`
     font-size: 32px;
     font-weight: 400;
     margin-bottom: 20px;
+  }
+  .desc {
+    font-size: 17px;
+  }
+  .desc:hover {
+    color: #A239EA;
   }
   .subTitle {
     font-size: 18px;
@@ -52,10 +58,13 @@ const Box = styled.div`
   }
   button {
     border: 0;
-    padding: 8px 12px;
+    padding: 8px 12px;;
     color: #FFFFFF;
     border-radius: 10000px;
-    background-color: #6F92BB;
+    background-color: #C490E4;
+  }
+  strong {
+    color: #FB7AFC;
   }
 `; 
 export default Box;

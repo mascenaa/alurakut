@@ -1,4 +1,6 @@
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import MainGrid from '../src/components/MainGrid/index'
 import Box from '../src/components/Box/index'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet, AlurakutLoginScreen } from '../src/lib/AlurakutCommuns'
@@ -33,18 +35,7 @@ function ProfileSidebar(props) {
           @{props.githubAvatar}
         </a>
       </p>
-      <Box className="smallTitle">
-        <p>
-          16y, dev
-        </p>
-      </Box>
       <hr />
-      <Box className="smallTitle">
-        <p>
-          Número de Seguidores: 3041
-        </p>
-      </Box>
-
       <AlurakutProfileSidebarMenuDefault />
     </Box>
   )
@@ -77,9 +68,9 @@ function ProfileRelationsBox(props2) {
 // ----------------------------------------------------------
 
 
-export default function Home() {
+export default function Home(props) {
   // UserDefault
-  const githubUser = 'patrooooo'
+  const githubUser1 = props.githubUser
   // SettingC
   const [comunidades, setComunidades] = React.useState([]);
   // FavPersons ;)
@@ -116,7 +107,8 @@ export default function Home() {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ "query": `query {
+      body: JSON.stringify({
+        "query": `query {
         allCommunities {
           id 
           title
@@ -125,12 +117,12 @@ export default function Home() {
         }
       }` })
     })
-    .then((response) => response.json())
-    .then((respostaCompleta) => {
-      const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
-      console.log(comunidadesVindasDoDato)
-      setComunidades(comunidadesVindasDoDato)
-    })
+      .then((response) => response.json())
+      .then((respostaCompleta) => {
+        const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+        console.log(comunidadesVindasDoDato)
+        setComunidades(comunidadesVindasDoDato)
+      })
   }, [])
 
   // ----------------------------------------------------------
@@ -141,7 +133,7 @@ export default function Home() {
       <MainGrid>
         <div>
           <Box className="profileArea" style={{ gridArea: 'profileArea' }}>
-            <ProfileSidebar githubAvatar={githubUser} />
+            <ProfileSidebar githubAvatar={githubUser1} />
           </Box>
         </div>
 
@@ -159,7 +151,7 @@ export default function Home() {
               function captureCommunity(e) {
                 e.preventDefault();
                 const dadosDoForm = new FormData(e.target);
-        
+
 
                 const comunidade = {
                   title: dadosDoForm.get('title'),
@@ -175,13 +167,13 @@ export default function Home() {
                   },
                   body: JSON.stringify(comunidade)
                 })
-                .then(async (response) => {
-                  const dados = await response.json();
-                  console.log(dados.registroCriado);
-                  const comunidade = dados.registroCriado;
-                  const comunidadesAtualizadas = [...comunidades, comunidade];
-                  setComunidades(comunidadesAtualizadas)
-                })
+                  .then(async (response) => {
+                    const dados = await response.json();
+                    console.log(dados.registroCriado);
+                    const comunidade = dados.registroCriado;
+                    const comunidadesAtualizadas = [...comunidades, comunidade];
+                    setComunidades(comunidadesAtualizadas)
+                  })
               }
             } >
               <div>
@@ -228,6 +220,7 @@ export default function Home() {
                   )
                 })}
               </ul>
+              <span className="span"><a>Ver mais</a></span>
             </ProfileRelationsBoxWrapper>
             <ProfileRelationsBoxWrapper>
               <h2 className="smallTitle">
@@ -254,4 +247,14 @@ export default function Home() {
   )
 }
 
-
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN
+  const { githubUser } = jwt.decode(token);
+  console.log("cookies: ",)
+  return {
+    props: {
+      githubUser
+    },
+  }
+}
