@@ -70,7 +70,7 @@ function ProfileRelationsBox(props2) {
 
 export default function Home(props) {
   // UserDefault
-  const githubUser1 = props.githubUser
+  const githubUser = props.githubUser
   // SettingC
   const [comunidades, setComunidades] = React.useState([]);
   // FavPersons ;)
@@ -133,7 +133,7 @@ export default function Home(props) {
       <MainGrid>
         <div>
           <Box className="profileArea" style={{ gridArea: 'profileArea' }}>
-            <ProfileSidebar githubAvatar={githubUser1} />
+            <ProfileSidebar githubAvatar={githubUser} />
           </Box>
         </div>
 
@@ -220,7 +220,6 @@ export default function Home(props) {
                   )
                 })}
               </ul>
-              <span className="span"><a>Ver mais</a></span>
             </ProfileRelationsBoxWrapper>
             <ProfileRelationsBoxWrapper>
               <h2 className="smallTitle">
